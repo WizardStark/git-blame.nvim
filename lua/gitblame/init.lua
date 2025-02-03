@@ -360,7 +360,7 @@ local function get_virt_text_pos()
     local win_width = vim.api.nvim_win_get_width(winid) - textoff
     local bufnr = vim.api.nvim_win_get_buf(winid)
     local lnum = vim.api.nvim_win_get_cursor(winid)[1]
-    local line_len = vim.api.nvim_strwidth(vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, true)[1])
+    local line_len = vim.api.nvim_strwidth(vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, true)[1]) + 8
 
     if vim.api.nvim_strwidth(current_blame_text) > (win_width - line_len) then
         return "eol"
