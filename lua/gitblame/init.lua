@@ -354,7 +354,6 @@ local function get_blame_text(filepath, info, callback)
 end
 
 local function get_virt_text_pos()
-    local text = require("gitblame").get_current_blame_text()
     local winid = vim.api.nvim_get_current_win()
     local wininfo = vim.fn.getwininfo(winid)[1]
     local textoff = wininfo and wininfo.textoff or 0
@@ -363,7 +362,7 @@ local function get_virt_text_pos()
     local lnum = vim.api.nvim_win_get_cursor(winid)[1]
     local line_len = vim.api.nvim_strwidth(vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, true)[1])
 
-    if vim.api.nvim_strwidth(text) > (win_width - line_len) then
+    if vim.api.nvim_strwidth(current_blame_text) > (win_width - line_len) then
         return "eol"
     end
 
