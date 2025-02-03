@@ -353,6 +353,23 @@ local function get_blame_text(filepath, info, callback)
     end
 end
 
+local function get_virt_text_pos()
+    local text = require("gitblame").get_current_blame_text()
+    local winid = vim.api.nvim_get_current_win()
+    local wininfo = vim.fn.getwininfo(winid)[1]
+    local textoff = wininfo and wininfo.textoff or 0
+    local win_width = vim.api.nvim_win_get_width(winid) - textoff
+    local bufnr = vim.api.nvim_win_get_buf(winid)
+    local lnum = vim.api.nvim_win_get_cursor(winid)[1]
+    local line_len = vim.api.nvim_strwidth(vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, true)[1])
+
+    if vim.api.nvim_strwidth(text) > (win_width - line_len) then
+        return "eol"
+    end
+
+    return "right_align"
+end
+
 ---Updates `current_blame_text` and sets the virtual text if it should.
 ---@param blame_text string?
 local function update_blame_text(blame_text)
@@ -381,6 +398,10 @@ local function update_blame_text(blame_text)
         utils.merge_map(user_options, options)
     elseif user_options then
         utils.log("gitblame_set_extmark_options should be a table")
+    end
+
+    if options.virt_text_pos == "right_align" then
+        options.virt_text_pos = get_virt_text_pos()
     end
 
     local line = utils.get_line_number()
