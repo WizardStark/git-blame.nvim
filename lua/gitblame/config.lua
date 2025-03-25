@@ -17,17 +17,26 @@ M.default_opts = {
     clear_event = "CursorMovedI",
     clipboard_register = "+",
     max_commit_summary_length = 0,
+    remote_domains = {
+        ["git.sr.ht"] = "sourcehut",
+        ["dev.azure.com"] = "azure",
+        ["bitbucket.org"] = "bitbucket",
+        ["codeberg.org"] = "forgejo"
+    }
 }
 
 ---@param opts SetupOptions?
 M.setup = function(opts)
-    opts = opts or {}
-    opts = vim.tbl_deep_extend("force", M.default_opts, opts)
+    local opts = opts or {}
 
-    for key, value in pairs(opts) do
-        if vim.g["gitblame_" .. key] == nil or M.default_opts[key] ~= value then
-            vim.g["gitblame_" .. key] = value
-        end
+    local global_var_opts = {}
+    for k, _ in pairs(M.default_opts) do
+        global_var_opts[k] = vim.g["gitblame_" .. k]
+    end
+
+    opts = vim.tbl_deep_extend("force", M.default_opts, global_var_opts, opts)
+    for k, v in pairs(opts) do
+        vim.g["gitblame_" .. k] = v
     end
 end
 
