@@ -403,6 +403,8 @@ local function update_blame_text(blame_text)
         options.virt_text_pos = get_virt_text_pos()
     end
 
+    options.priority = 0
+
     local line = utils.get_line_number()
     vim.api.nvim_buf_set_extmark(0, NAMESPACE_ID, line - 1, 0, options)
 end
@@ -674,7 +676,7 @@ M.copy_pr_url_to_clipboard = function()
                     if code ~= 0 then
                         utils.log("Failed to find PR (is gh CLI installed?)")
                     end
-                end
+                end,
             })
         else
             utils.log("Unable to get commit SHA")
